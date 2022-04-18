@@ -57,8 +57,6 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         lobbyPanelHost.SetActive(false);
         lobbyPanelClient.SetActive(false);
         connectingText.SetActive(false);
-        
-        _roomName = launcherPanel.transform.GetChild(1).GetComponent<RoomNameInputField>().GetPlayerPrefRoomName();
     }
 
     #endregion
@@ -70,8 +68,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("OnConnectedToMaster() was called by PUN");
         
-        // connect to room
-        PhotonNetwork.JoinRoom(_roomName);
+        // join or create room
+        PhotonNetwork.JoinOrCreateRoom(_roomName, new RoomOptions(), TypedLobby.Default);
     }
 
     public override void OnJoinedRoom()
@@ -100,8 +98,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("OnJoinRoomFailed() was called by PUN. So we create one.");
 
-        // failed to join room, so create a new room
-        PhotonNetwork.CreateRoom(_roomName, new RoomOptions());
+        // sets the proper display panel/label
+        launcherPanel.SetActive(true);
+        lobbyPanelHost.SetActive(false);
+        lobbyPanelClient.SetActive(false);
+        connectingText.SetActive(false);
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -121,6 +122,9 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     // start the connection process
     public void Connect()
     {
+        // get the room name the player entered
+        _roomName = launcherPanel.transform.GetChild(1).GetComponent<RoomNameInputField>().GetPlayerPrefRoomName();
+        
         // sets the proper display panel/label
         launcherPanel.SetActive(false);
         lobbyPanelHost.SetActive(false);
@@ -130,7 +134,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         // join room if connected to server, otherwise connect
         if (PhotonNetwork.IsConnected)
         {
-            PhotonNetwork.JoinRoom(_roomName);
+            PhotonNetwork.JoinOrCreateRoom(_roomName, new RoomOptions(), TypedLobby.Default);
         }
         else
         {

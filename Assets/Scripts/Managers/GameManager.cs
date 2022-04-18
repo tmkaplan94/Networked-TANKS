@@ -48,6 +48,7 @@ public class GameManager : MonoBehaviour
             {
                 m_Tanks[i].m_Instance = PhotonNetwork.Instantiate(
                     "Networked Tank", m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation);
+                DontDestroyOnLoad(m_Tanks[i].m_Instance);
             }
             else
             {

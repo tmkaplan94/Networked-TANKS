@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Photon.Pun;
+using UnityEngine;
 
 public class TankMovement : MonoBehaviour
 {
@@ -16,12 +17,15 @@ public class TankMovement : MonoBehaviour
     private Rigidbody m_Rigidbody;         
     private float m_MovementInputValue;    
     private float m_TurnInputValue;        
-    private float m_OriginalPitch;         
+    private float m_OriginalPitch;
+
+    private bool m_Networked;
 
 
     private void Awake()
     {
         m_Rigidbody = GetComponent<Rigidbody>();
+        m_Networked = GameObject.Find("GameManager").GetComponent<GameManager>().m_GameIsNetworked;
     }
 
 
@@ -41,6 +45,17 @@ public class TankMovement : MonoBehaviour
 
     private void Start()
     {
+        // if (m_Networked)
+        // {
+        //     m_MovementAxisName = "Vertical1";
+        //     m_TurnAxisName = "Horizontal1";
+        // }
+        // else
+        // {
+        //     m_MovementAxisName = "Vertical" + m_PlayerNumber;
+        //     m_TurnAxisName = "Horizontal" + m_PlayerNumber;
+        // }
+        
         m_MovementAxisName = "Vertical" + m_PlayerNumber;
         m_TurnAxisName = "Horizontal" + m_PlayerNumber;
 

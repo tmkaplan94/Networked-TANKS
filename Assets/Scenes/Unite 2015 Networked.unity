@@ -263,7 +263,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18e521b6f8588c44f9e68c769421eb47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_GameIsNetworked: 0
+  m_GameIsNetworked: 1
   m_NumRoundsToWin: 5
   m_StartDelay: 3
   m_EndDelay: 3

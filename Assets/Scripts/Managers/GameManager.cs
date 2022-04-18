@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Photon.Pun;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    public bool m_GameIsNetworked;
     public int m_NumRoundsToWin = 5;        
     public float m_StartDelay = 3f;         
     public float m_EndDelay = 3f;           
@@ -42,8 +44,16 @@ public class GameManager : MonoBehaviour
     {
         for (int i = 0; i < m_Tanks.Length; i++)
         {
-            m_Tanks[i].m_Instance =
-                Instantiate(m_TankPrefab, m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation) as GameObject;
+            if (m_GameIsNetworked)
+            {
+                m_Tanks[i].m_Instance = PhotonNetwork.Instantiate(
+                    "Networked Tank", m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation);
+            }
+            else
+            {
+                m_Tanks[i].m_Instance =
+                    Instantiate(m_TankPrefab, m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation) as GameObject;
+            }
             m_Tanks[i].m_PlayerNumber = i + 1;
             m_Tanks[i].Setup();
         }
@@ -71,7 +81,14 @@ public class GameManager : MonoBehaviour
 
         if (m_GameWinner != null)
         {
-            SceneManager.LoadScene(0);
+            if (m_GameIsNetworked)
+            {
+                PhotonNetwork.LoadLevel("Unite 2015 Networked");
+            }
+            else
+            {
+                SceneManager.LoadScene("Unite 2015");
+            }
         }
         else
         {

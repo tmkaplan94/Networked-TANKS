@@ -19,7 +19,6 @@ public class TankManager
 
     public void Setup()
     {
-        if (!_View.IsMine) return;
         m_Movement = m_Instance.GetComponent<TankMovement>();
         m_Shooting = m_Instance.GetComponent<TankShooting>();
         m_CanvasGameObject = m_Instance.GetComponentInChildren<Canvas>().gameObject;

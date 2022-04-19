@@ -11,7 +11,7 @@ public class TankManager
     [HideInInspector] public string m_ColoredPlayerText;     
     [HideInInspector] public GameObject m_Instance;          
     [HideInInspector] public int m_Wins;
-    public PhotonView _View;
+    public PhotonView m_TankView;
 
     private TankMovement m_Movement;       
     private TankShooting m_Shooting;
@@ -23,17 +23,8 @@ public class TankManager
         m_Shooting = m_Instance.GetComponent<TankShooting>();
         m_CanvasGameObject = m_Instance.GetComponentInChildren<Canvas>().gameObject;
 
-        if (PhotonNetwork.IsMasterClient)
-        {
-            m_Movement.m_PlayerNumber = 1;
-            m_Shooting.m_PlayerNumber = 1;
-        }
-        else
-        {
-            m_Movement.m_PlayerNumber = 2;
-            m_Shooting.m_PlayerNumber = 2;
-        }
-
+        m_Movement.m_PlayerNumber = m_PlayerNumber;
+        m_Shooting.m_PlayerNumber = m_PlayerNumber;
 
         m_ColoredPlayerText = "<color=#" + ColorUtility.ToHtmlStringRGB(m_PlayerColor) + ">PLAYER " + m_PlayerNumber + "</color>";
 
@@ -48,7 +39,7 @@ public class TankManager
 
     public void DisableControl()
     {
-        if (!_View.IsMine) return;
+        if (!PhotonNetwork.IsMasterClient) return;
         m_Movement.enabled = false;
         m_Shooting.enabled = false;
 
@@ -58,7 +49,7 @@ public class TankManager
 
     public void EnableControl()
     {
-        if (!_View.IsMine) return;
+        if (!PhotonNetwork.IsMasterClient) return;
         m_Movement.enabled = true;
         m_Shooting.enabled = true;
 
@@ -68,7 +59,7 @@ public class TankManager
 
     public void Reset()
     {
-        if (!_View.IsMine) return;
+        if (!PhotonNetwork.IsMasterClient) return;
         m_Instance.transform.position = m_SpawnPoint.position;
         m_Instance.transform.rotation = m_SpawnPoint.rotation;
 

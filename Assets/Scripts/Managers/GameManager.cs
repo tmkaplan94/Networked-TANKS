@@ -13,8 +13,7 @@ public class GameManager : MonoBehaviour
     public CameraControl m_CameraControl;   
     public Text m_MessageText;              
     public GameObject m_TankPrefab;
-    public GameObject m_NetworkedTankPrefab;
-    public PhotonView m_View;
+    public PhotonView m_ManagerView;
     public FollowNetworkTargets m_NetworkTargets;
     public TankManager[] m_Tanks;
 
@@ -29,26 +28,24 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        if (!PhotonNetwork.IsMasterClient) return;
-        
         // This line fixes a change to the physics engine.
         Physics.defaultMaxDepenetrationVelocity = k_MaxDepenetrationVelocity;
         
         m_StartWait = new WaitForSeconds(m_StartDelay);
         m_EndWait = new WaitForSeconds(m_EndDelay);
 
-        // if (m_GameIsNetworked && m_view.IsMine)
-        // {
-        //     SpawnNetworkedTanks();
-        //     SetNetworkedCameraTargets();
-        // }
-        // else
-        // {
-        //     SpawnAllTanks();
-        //     SetCameraTargets();
-        // }
-        SpawnNetworkedTanks();
-        SetNetworkedCameraTargets();
+        if (m_GameIsNetworked && PhotonNetwork.IsMasterClient)
+        {
+            SpawnNetworkedTanks();
+            SetNetworkedCameraTargets();
+        }
+        else
+        {
+            SpawnAllTanks();
+            SetCameraTargets();
+        }
+        // SpawnNetworkedTanks();
+        // SetNetworkedCameraTargets();
 
         StartCoroutine(GameLoop());
     }
@@ -85,16 +82,18 @@ public class GameManager : MonoBehaviour
         //     m_Tanks[1].Setup();
         // }
 
+        if (!PhotonNetwork.IsMasterClient) return;
+        
         // spawn player 1
         m_Tanks[0].m_Instance = PhotonNetwork.Instantiate(
-            m_NetworkedTankPrefab.name, m_Tanks[0].m_SpawnPoint.position, m_Tanks[0].m_SpawnPoint.rotation);
+            "Networked Tank Blue", m_Tanks[0].m_SpawnPoint.position, m_Tanks[0].m_SpawnPoint.rotation);
         Debug.Log("PhotonNetwork.Instantiate() was called");
         m_NetworkTargets.AddToTargets(m_Tanks[0].m_Instance.transform);
         m_Tanks[0].Setup();
-
+        
         // spawn player 2
         m_Tanks[1].m_Instance = PhotonNetwork.Instantiate(
-            m_NetworkedTankPrefab.name, m_Tanks[1].m_SpawnPoint.position, m_Tanks[1].m_SpawnPoint.rotation);
+            "Networked Tank Red", m_Tanks[1].m_SpawnPoint.position, m_Tanks[1].m_SpawnPoint.rotation);
         Debug.Log("PhotonNetwork.Instantiate() was called");
         m_NetworkTargets.AddToTargets(m_Tanks[1].m_Instance.transform);
         m_Tanks[1].Setup();

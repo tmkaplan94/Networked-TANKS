@@ -287,6 +287,7 @@ GameObject:
   - component: {fileID: 694958323}
   - component: {fileID: 694958322}
   - component: {fileID: 694958324}
+  - component: {fileID: 694958325}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -314,9 +315,9 @@ MonoBehaviour:
   m_MessageText: {fileID: 1792329637}
   m_TankPrefab: {fileID: 7158182906901938725, guid: 75b9d7b5ae3cfa347b7fdb88fe22911c,
     type: 3}
+  m_ManagerView: {fileID: 694958325}
   m_NetworkedTankPrefab: {fileID: 8863470495778818546, guid: 036e7ad1fad6d32438f817851300d741,
     type: 3}
-  m_View: {fileID: -8626065839945722848, guid: 036e7ad1fad6d32438f817851300d741, type: 3}
   m_NetworkTargets: {fileID: 151158230}
   m_Tanks:
   - m_PlayerColor: {r: 0.16470589, g: 0.39215687, b: 0.69803923, a: 0}
@@ -325,7 +326,7 @@ MonoBehaviour:
     m_ColoredPlayerText: 
     m_Instance: {fileID: 0}
     m_Wins: 0
-    _View: {fileID: -8626065839945722848, guid: 036e7ad1fad6d32438f817851300d741,
+    m_TankView: {fileID: -8626065839945722848, guid: 036e7ad1fad6d32438f817851300d741,
       type: 3}
   - m_PlayerColor: {r: 0.8980392, g: 0.18039216, b: 0.15686275, a: 0}
     m_SpawnPoint: {fileID: 26642997}
@@ -333,7 +334,7 @@ MonoBehaviour:
     m_ColoredPlayerText: 
     m_Instance: {fileID: 0}
     m_Wins: 0
-    _View: {fileID: -8626065839945722848, guid: 036e7ad1fad6d32438f817851300d741,
+    m_TankView: {fileID: -8626065839945722848, guid: 036e7ad1fad6d32438f817851300d741,
       type: 3}
 --- !u!4 &694958323
 Transform:
@@ -446,6 +447,28 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &694958325
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 694958321}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 1
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0

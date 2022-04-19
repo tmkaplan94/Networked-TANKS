@@ -10,7 +10,7 @@ public class TankMovement : MonoBehaviour
     public AudioClip m_EngineIdling;       
     public AudioClip m_EngineDriving;      
     public float m_PitchRange = 0.2f;
-
+    public PhotonView m_TankView;
     
     private string m_MovementAxisName;     
     private string m_TurnAxisName;         
@@ -45,19 +45,16 @@ public class TankMovement : MonoBehaviour
 
     private void Start()
     {
-        // if (m_Networked)
-        // {
-        //     m_MovementAxisName = "Vertical1";
-        //     m_TurnAxisName = "Horizontal1";
-        // }
-        // else
-        // {
-        //     m_MovementAxisName = "Vertical" + m_PlayerNumber;
-        //     m_TurnAxisName = "Horizontal" + m_PlayerNumber;
-        // }
-        
-        m_MovementAxisName = "Vertical" + m_PlayerNumber;
-        m_TurnAxisName = "Horizontal" + m_PlayerNumber;
+        if (m_Networked)
+        {
+            m_MovementAxisName = "Vertical1";
+            m_TurnAxisName = "Horizontal1";
+        }
+        else
+        {
+            m_MovementAxisName = "Vertical" + m_PlayerNumber;
+            m_TurnAxisName = "Horizontal" + m_PlayerNumber;
+        }
 
         m_OriginalPitch = m_MovementAudio.pitch;
     }

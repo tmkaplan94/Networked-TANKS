@@ -1,10 +1,14 @@
 fileFormatVersion: 2
 guid: 29af3199e11b72e47b41ff380db540fd
-timeCreated: 1431010528
-licenseType: Store
 MonoImporter:
+  externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - m_MovementAudio: {instanceID: 0}
+  - m_EngineIdling: {instanceID: 0}
+  - m_EngineDriving: {instanceID: 0}
+  - m_TankView: {fileID: -8626065839945722848, guid: 036e7ad1fad6d32438f817851300d741,
+      type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

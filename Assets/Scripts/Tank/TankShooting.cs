@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using Photon.Pun;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class TankShooting : MonoBehaviour
@@ -20,6 +22,7 @@ public class TankShooting : MonoBehaviour
     private float m_ChargeSpeed;         
     private bool m_Fired;                
 
+    private bool m_Networked;
 
     private void OnEnable()
     {
@@ -27,10 +30,21 @@ public class TankShooting : MonoBehaviour
         m_AimSlider.value = m_MinLaunchForce;
     }
 
+    private void Awake()
+    {
+        m_Networked = GameObject.Find("GameManager").GetComponent<GameManager>().m_GameIsNetworked;
+    }
 
     private void Start()
     {
-        m_FireButton = "Fire" + m_PlayerNumber;
+        if (m_Networked)
+        {
+            m_FireButton = "Fire1";
+        }
+        else
+        {
+            m_FireButton = "Fire" + m_PlayerNumber;
+        }
 
         m_ChargeSpeed = (m_MaxLaunchForce - m_MinLaunchForce) / m_MaxChargeTime;
     }
@@ -81,12 +95,22 @@ public class TankShooting : MonoBehaviour
         // Set the fired flag so only Fire is only called once.
         m_Fired = true;
 
-        // Create an instance of the shell and store a reference to it's rigidbody.
-        Rigidbody shellInstance =
-            Instantiate (m_Shell, m_FireTransform.position, m_FireTransform.rotation) as Rigidbody;
 
-        // Set the shell's velocity to the launch force in the fire position's forward direction.
-        shellInstance.velocity = m_CurrentLaunchForce * m_FireTransform.forward;
+        // Create an instance of the shell and store a reference to it's rigidbody.
+        GameObject shell;
+        Rigidbody shellInstance;
+        if (m_Networked)
+        {
+            shell = PhotonNetwork.Instantiate (m_Shell.name, m_FireTransform.position, m_FireTransform.rotation);
+            shell.GetComponent<Rigidbody>().velocity = m_CurrentLaunchForce * m_FireTransform.forward;
+        }
+        else
+        {
+            shellInstance = Instantiate (m_Shell, m_FireTransform.position, m_FireTransform.rotation);
+            
+            // Set the shell's velocity to the launch force in the fire position's forward direction.
+            shellInstance.velocity = m_CurrentLaunchForce * m_FireTransform.forward;
+        }
 
         // Change the clip to the firing clip and play it.
         m_ShootingAudio.clip = m_FireClip;

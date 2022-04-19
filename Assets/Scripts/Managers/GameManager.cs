@@ -12,9 +12,11 @@ public class GameManager : MonoBehaviour
     public float m_EndDelay = 3f;           
     public CameraControl m_CameraControl;   
     public Text m_MessageText;              
-    public GameObject m_TankPrefab;         
-    public TankManager[] m_Tanks;           
-
+    public GameObject m_TankPrefab;
+    public GameObject m_NetworkedTankPrefab;
+    public PhotonView m_View;
+    public FollowNetworkTargets m_NetworkTargets;
+    public TankManager[] m_Tanks;
 
     private int m_RoundNumber;              
     private WaitForSeconds m_StartWait;     
@@ -27,40 +29,77 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        if (!PhotonNetwork.IsMasterClient) return;
+        
         // This line fixes a change to the physics engine.
         Physics.defaultMaxDepenetrationVelocity = k_MaxDepenetrationVelocity;
         
         m_StartWait = new WaitForSeconds(m_StartDelay);
         m_EndWait = new WaitForSeconds(m_EndDelay);
 
-        SpawnAllTanks();
-        SetCameraTargets();
+        // if (m_GameIsNetworked && m_view.IsMine)
+        // {
+        //     SpawnNetworkedTanks();
+        //     SetNetworkedCameraTargets();
+        // }
+        // else
+        // {
+        //     SpawnAllTanks();
+        //     SetCameraTargets();
+        // }
+        SpawnNetworkedTanks();
+        SetNetworkedCameraTargets();
 
         StartCoroutine(GameLoop());
     }
-
-
+    
     private void SpawnAllTanks()
     {
         for (int i = 0; i < m_Tanks.Length; i++)
         {
-            if (m_GameIsNetworked)
-            {
-                m_Tanks[i].m_Instance = PhotonNetwork.Instantiate(
-                    "Networked Tank", m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation);
-                DontDestroyOnLoad(m_Tanks[i].m_Instance);
-            }
-            else
-            {
-                m_Tanks[i].m_Instance =
-                    Instantiate(m_TankPrefab, m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation) as GameObject;
-            }
+            m_Tanks[i].m_Instance = Instantiate(
+                m_TankPrefab, m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation);
             m_Tanks[i].m_PlayerNumber = i + 1;
             m_Tanks[i].Setup();
         }
     }
 
+    private void SpawnNetworkedTanks()
+    {
+        Debug.Log("SpawnedNetworkedTanks() was called");
 
+        // if (PhotonNetwork.IsMasterClient)
+        // {
+        //     m_Tanks[0].m_Instance = PhotonNetwork.Instantiate(
+        //         m_NetworkedTankPrefab.name, m_Tanks[0].m_SpawnPoint.position, m_Tanks[0].m_SpawnPoint.rotation);
+        //     Debug.Log("PhotonNetwork.Instantiate() was called");
+        //     m_NetworkTargets.AddToTargets(m_Tanks[0].m_Instance.transform);
+        //     m_Tanks[0].Setup();
+        // }
+        // else
+        // {
+        //     m_Tanks[1].m_Instance = PhotonNetwork.Instantiate(
+        //         m_NetworkedTankPrefab.name, m_Tanks[1].m_SpawnPoint.position, m_Tanks[1].m_SpawnPoint.rotation);
+        //     Debug.Log("PhotonNetwork.Instantiate() was called");
+        //     m_NetworkTargets.AddToTargets(m_Tanks[1].m_Instance.transform);
+        //     m_Tanks[1].Setup();
+        // }
+
+        // spawn player 1
+        m_Tanks[0].m_Instance = PhotonNetwork.Instantiate(
+            m_NetworkedTankPrefab.name, m_Tanks[0].m_SpawnPoint.position, m_Tanks[0].m_SpawnPoint.rotation);
+        Debug.Log("PhotonNetwork.Instantiate() was called");
+        m_NetworkTargets.AddToTargets(m_Tanks[0].m_Instance.transform);
+        m_Tanks[0].Setup();
+
+        // spawn player 2
+        m_Tanks[1].m_Instance = PhotonNetwork.Instantiate(
+            m_NetworkedTankPrefab.name, m_Tanks[1].m_SpawnPoint.position, m_Tanks[1].m_SpawnPoint.rotation);
+        Debug.Log("PhotonNetwork.Instantiate() was called");
+        m_NetworkTargets.AddToTargets(m_Tanks[1].m_Instance.transform);
+        m_Tanks[1].Setup();
+    }
+    
     private void SetCameraTargets()
     {
         Transform[] targets = new Transform[m_Tanks.Length];
@@ -73,6 +112,10 @@ public class GameManager : MonoBehaviour
         m_CameraControl.m_Targets = targets;
     }
 
+    private void SetNetworkedCameraTargets()
+    {
+        m_CameraControl.m_Targets = m_NetworkTargets.GetTargetsArray();
+    }
 
     private IEnumerator GameLoop()
     {

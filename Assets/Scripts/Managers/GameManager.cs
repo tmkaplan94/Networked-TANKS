@@ -34,10 +34,18 @@ public class GameManager : MonoBehaviour
         m_StartWait = new WaitForSeconds(m_StartDelay);
         m_EndWait = new WaitForSeconds(m_EndDelay);
 
-        if (m_GameIsNetworked && PhotonNetwork.IsMasterClient)
+        if (m_GameIsNetworked)
         {
-            SpawnNetworkedTanks();
-            SetNetworkedCameraTargets();
+            if (PhotonNetwork.IsMasterClient)
+            {
+                Debug.Log("IsMasterClient = " + PhotonNetwork.IsMasterClient);
+                SpawnNetworkedTanks();
+                SetNetworkedCameraTargets();
+            }
+            else
+            {
+                SetNetworkedCameraTargets();
+            }
         }
         else
         {
